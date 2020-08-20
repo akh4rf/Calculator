@@ -9,7 +9,7 @@
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "console": "internalconsole"
+            "console": "internalConsole"
         },
         {
             "type": "java",
@@ -17,7 +17,7 @@
             "request": "launch",
             "mainClass": "Calculator",
             "projectName": "Calculator_8920faea",
-            "console": "internalconsole"
+            "console": "internalConsole"
         }
     ]
 }
