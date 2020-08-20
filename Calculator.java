@@ -24,7 +24,7 @@ public class Calculator extends JFrame {
         numAndOper = new ArrayList<>();
         JFrame frame = new JFrame(); // Creates empty window
         // Create button grid //
-        String[] names = {"9","8","7","÷","6","5","4","x","3","2","1","-",".","0","=","+"};
+        String[] names = {"7","8","9","÷","4","5","6","x","1","2","3","-",".","0","=","+"};
         buttons = new JButton[16];
         for (int i = 0; i < 16; i++) {
             buttons[i] = new JButton(names[i]);
