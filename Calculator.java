@@ -58,11 +58,12 @@ public class Calculator extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
             String beforetext = field.getText();
             String name = ((JButton) e.getSource()).getActionCommand();
-    
+
+            // CASE 1: displayed text is not an operator //
             if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
+                // If operator, add displayed number to ArrayList and display operator //
                 if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     if (numAndOper.size()==0) {
                         numAndOper.add(beforetext);
@@ -72,6 +73,7 @@ public class Calculator extends JFrame {
                     }
                     field.setText(name);
                 }
+                // If equals, add the displayed number to ArrayList and calculate result //
                 else if (name.equals("=")) {
                     numAndOper.add(beforetext);
                     double result = calc(numAndOper);
@@ -79,49 +81,58 @@ public class Calculator extends JFrame {
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
                 }
+                // Else, add another digit to number //
                 else {
                     String aftertext = beforetext;
                     if (name.equals(".")) {
+                        // Disallow multiple decimal points //
                         if (!beforetext.contains(".")) {
                             aftertext += name;
                         }
                     }
                     else {aftertext += name;}
-                    
                     field.setText(aftertext);
                 }
             }
+
+            // CASE 2: displayed text is an operator //
             else {
+                // If new operator, replace old one //
                 if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     field.setText(name);
                 }
+                // If equals, disregard displayed operator and calculate result //
                 else if (name.equals("=")) {
                     double result = calc(numAndOper);
                     field.setText(Double.toString(result));
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
                 }
+                // Else, add the operator to the ArrayList and display new number //
                 else {
                     numAndOper.add(beforetext);
                     String aftertext = name;
                     field.setText(aftertext);
                 }
             }
-            
         }
-
     }
-
+    /**
+     * A function that takes an input ArrayList<String> of doubles and operators and returns the reduced result
+     * @param al
+     * @return
+     */
     public double calc(ArrayList<String> al) {
-        System.out.println(al);
+        // Edge cases //
         if (al.size() == 0) {return 0;}
         if (al.size() == 1) {return Double.parseDouble(al.get(0));}
         else {
             double result = Double.parseDouble(al.get(0));
-            int j = 1;
-            while (j <= al.size() - 2) {
+            // Iterates over oper-double pairs //
+            for (int j = 1; j <= al.size() - 2; j+=2) {
                 String oper = al.get(j);
                 double nxt = Double.parseDouble(al.get(j+1));
+                // Checks which operation to use //
                 switch (oper) {
                     case "+":
                         result += nxt;
@@ -136,10 +147,8 @@ public class Calculator extends JFrame {
                         result /= nxt;
                         break;
                 }
-                j+=2;
             }
             return result;
         }
     }
-
 }
