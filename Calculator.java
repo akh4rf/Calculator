@@ -30,8 +30,8 @@ public class Calculator extends JFrame {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
-        JPanel buttonGrid = new JPanel(); // Creates JPanel for the 16 buttons
-        buttonGrid.setLayout(new GridLayout(4, 5)); // Sets up 4x4 layout
+        JPanel buttonGrid = new JPanel(); // Creates JPanel for the 20 buttons
+        buttonGrid.setLayout(new GridLayout(4, 5)); // Sets up 4x5 layout
 
         // Add buttons to grid //
         for (int i = 0; i < 20; i++) {
@@ -53,7 +53,7 @@ public class Calculator extends JFrame {
         frame.setVisible(true);
 
     }
-
+    
     private class buttonListener implements ActionListener {
 
         @Override
