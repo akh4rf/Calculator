@@ -61,8 +61,15 @@ public class Calculator extends JFrame {
             String beforetext = field.getText();
             String name = ((JButton) e.getSource()).getActionCommand();
 
+            // CLEAR CASE //
+            if (name.equals("CLR")) {
+                numAndOper.removeAll(numAndOper);
+                field.setText("0");
+            }
+
             // CASE 1: displayed text is not an operator //
             if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
+                double num = Double.parseDouble(beforetext);
                 // If operator, add displayed number to ArrayList and display operator //
                 if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     if (numAndOper.size()==0) {
@@ -81,30 +88,27 @@ public class Calculator extends JFrame {
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
                 }
-                // If clear, delete all history and reset screen //
-                else if (name.equals("CLR")) {
-                    numAndOper.removeAll(numAndOper);
-                    field.setText("0");
-                }
                 // If x-squared, square displayed number //
                 else if (name.equals("x^2")) {
-                    double squared = Math.pow(Double.parseDouble(beforetext), 2);
+                    double squared = Math.pow(num, 2);
                     field.setText(Double.toString(squared));
                 }
                 // If square-root, perform sqrt on displayed number //
                 else if (name.equals("SQRT")) {
-                    double sqrt = Math.pow(Double.parseDouble(beforetext), 0.5);
+                    double sqrt = Math.pow(num, 0.5);
                     field.setText(Double.toString(sqrt));
                 }
                 // If !, perform factorial on displayed number //
                 else if (name.equals("x!")) {
-                    double fac = factorial(Double.parseDouble(beforetext));
                     // Solves problem where 171! and above return "infinity" //
-                    if (fac > 170) {
+                    if (num > 170) {
                         numAndOper.removeAll(numAndOper);
                         field.setText("LIMIT EXCEEDED");
                     }
-                    else {field.setText(Double.toString(fac));}
+                    else {
+                        double fac = factorial(num);
+                        field.setText(Double.toString(fac));
+                    }
                 }
                 // Else, add another digit to number //
                 else {
@@ -132,11 +136,6 @@ public class Calculator extends JFrame {
                     field.setText(Double.toString(result));
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
-                }
-                // If clear, delete all history and reset screen //
-                else if (name.equals("CLR")) {
-                    numAndOper.removeAll(numAndOper);
-                    field.setText("0");
                 }
                 // If x-squared/SQRT/factorial, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
                 else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!")) {
