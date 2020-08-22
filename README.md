@@ -9,5 +9,5 @@ Version 0.2 --- Added listeners to buttons, implemented basic operations and equ
 Version 0.3 --- Switched loop types in calc method and added comments  
 Version 0.4 --- Flipped number pad (realized it was backwards, thanks Teagan)  
 Version 0.5.0 --- Added functional buttons for CLR, x^2, SQRT, and factorial  
-Version 0.5.1 (in progress) --- Fix bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
-Version 0.5.2 (in progress) --- Address issue when factorial input is too big (recursion times out)  
+Version 0.5.1 --- Addressed issue where factorial returns "infinity" when input is > 170  
+Version 0.5.2 (in progress) --- Fix bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  

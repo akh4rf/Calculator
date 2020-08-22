@@ -53,7 +53,7 @@ public class Calculator extends JFrame {
         frame.setVisible(true);
 
     }
-    
+
     private class buttonListener implements ActionListener {
 
         @Override
@@ -99,7 +99,12 @@ public class Calculator extends JFrame {
                 // If !, perform factorial on displayed number //
                 else if (name.equals("x!")) {
                     double fac = factorial(Double.parseDouble(beforetext));
-                    field.setText(Double.toString(fac));
+                    // Solves problem where 171! and above return "infinity" //
+                    if (fac > 170) {
+                        numAndOper.removeAll(numAndOper);
+                        field.setText("LIMIT EXCEEDED");
+                    }
+                    else {field.setText(Double.toString(fac));}
                 }
                 // Else, add another digit to number //
                 else {
@@ -187,6 +192,7 @@ public class Calculator extends JFrame {
      * @return
      */
     public double factorial(double d) {
+        // Zero case //
         if (d==0) {return 1.0;}
         else {
             double result = 1.0;
