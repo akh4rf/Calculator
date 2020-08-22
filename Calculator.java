@@ -24,17 +24,17 @@ public class Calculator extends JFrame {
         numAndOper = new ArrayList<>();
         JFrame frame = new JFrame(); // Creates empty window
         // Create button grid //
-        String[] names = {"7","8","9","÷","4","5","6","x","1","2","3","-",".","0","=","+"};
-        buttons = new JButton[16];
-        for (int i = 0; i < 16; i++) {
+        String[] names = {"CLR","7","8","9","÷","x^2","4","5","6","x","SQRT","1","2","3","-","x!",".","0","=","+"};
+        buttons = new JButton[20];
+        for (int i = 0; i < 20; i++) {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
         JPanel buttonGrid = new JPanel(); // Creates JPanel for the 16 buttons
-        buttonGrid.setLayout(new GridLayout(4, 4)); // Sets up 4x4 layout
+        buttonGrid.setLayout(new GridLayout(4, 5)); // Sets up 4x4 layout
 
         // Add buttons to grid //
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 20; i++) {
             buttonGrid.add(buttons[i]);
         }
         // Create container for everything //
@@ -81,6 +81,26 @@ public class Calculator extends JFrame {
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
                 }
+                // If clear, delete all history and reset screen //
+                else if (name.equals("CLR")) {
+                    numAndOper.removeAll(numAndOper);
+                    field.setText("0");
+                }
+                // If x-squared, square displayed number //
+                else if (name.equals("x^2")) {
+                    double squared = Math.pow(Double.parseDouble(beforetext), 2);
+                    field.setText(Double.toString(squared));
+                }
+                // If square-root, perform sqrt on displayed number //
+                else if (name.equals("SQRT")) {
+                    double sqrt = Math.pow(Double.parseDouble(beforetext), 0.5);
+                    field.setText(Double.toString(sqrt));
+                }
+                // If !, perform factorial on displayed number //
+                else if (name.equals("x!")) {
+                    double fac = factorial(Double.parseDouble(beforetext));
+                    field.setText(Double.toString(fac));
+                }
                 // Else, add another digit to number //
                 else {
                     String aftertext = beforetext;
@@ -107,6 +127,16 @@ public class Calculator extends JFrame {
                     field.setText(Double.toString(result));
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
+                }
+                // If clear, delete all history and reset screen //
+                else if (name.equals("CLR")) {
+                    numAndOper.removeAll(numAndOper);
+                    field.setText("0");
+                }
+                // If x-squared/SQRT/factorial, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
+                else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!")) {
+                    numAndOper.removeAll(numAndOper);
+                    field.setText("ERROR");
                 }
                 // Else, add the operator to the ArrayList and display new number //
                 else {
@@ -147,6 +177,22 @@ public class Calculator extends JFrame {
                         result /= nxt;
                         break;
                 }
+            }
+            return result;
+        }
+    }
+    /**
+     * Returns d!
+     * @param d
+     * @return
+     */
+    public double factorial(double d) {
+        if (d==0) {return 1.0;}
+        else {
+            double result = 1.0;
+            while (d > 1.0) {
+                result*=d;
+                d-=1;
             }
             return result;
         }
