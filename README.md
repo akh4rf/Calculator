@@ -16,7 +16,7 @@ Switched loop types in calc method and added comments
 Version 0.4  
 Flipped number pad (realized it was backwards, thanks Teagan)  
   
-Version 0.5.0
+Version 0.5.0  
 Added functional buttons for CLR, x^2, SQRT, and factorial  
   
 Version 0.5.1  

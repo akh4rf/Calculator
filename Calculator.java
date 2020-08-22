@@ -51,7 +51,6 @@ public class Calculator extends JFrame {
         frame.setTitle("Calculator");
         frame.pack();
         frame.setVisible(true);
-
     }
 
     private class buttonListener implements ActionListener {
