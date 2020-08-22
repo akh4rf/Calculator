@@ -154,7 +154,7 @@ public class Calculator extends JFrame {
      */
     public double calc(ArrayList<String> al) {
         // Edge cases //
-        if (al.size() == 0) {return 0;}
+        if (al.size() == 0) {return 0.0;}
         if (al.size() == 1) {return Double.parseDouble(al.get(0));}
         else {
             double result = Double.parseDouble(al.get(0));
