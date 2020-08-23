@@ -57,6 +57,7 @@ public class Calculator extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            
             String beforetext = field.getText();
             String name = ((JButton) e.getSource()).getActionCommand();
 
@@ -89,13 +90,23 @@ public class Calculator extends JFrame {
                 }
                 // If x-squared, square displayed number //
                 else if (name.equals("x^2")) {
-                    double squared = Math.pow(num, 2);
-                    field.setText(Double.toString(squared));
+                    String squared = Double.toString(Math.pow(num, 2));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(squared);
+                    }
+                    field.setText(squared);
                 }
                 // If square-root, perform sqrt on displayed number //
                 else if (name.equals("SQRT")) {
-                    double sqrt = Math.pow(num, 0.5);
-                    field.setText(Double.toString(sqrt));
+                    String sqrt = Double.toString(Math.pow(num, 0.5));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(sqrt);
+                    }
+                    field.setText(sqrt);
                 }
                 // If !, perform factorial on displayed number //
                 else if (name.equals("x!")) {
@@ -105,8 +116,13 @@ public class Calculator extends JFrame {
                         field.setText("LIMIT EXCEEDED");
                     }
                     else {
-                        double fac = factorial(num);
-                        field.setText(Double.toString(fac));
+                        String fac = Double.toString(factorial(num));
+                        // Edge case when size = 1, must replace saved value with new value //
+                        if (numAndOper.size()==1) {
+                            numAndOper.remove(0);
+                            numAndOper.add(fac);
+                        }
+                        field.setText(fac);
                     }
                 }
                 // Else, add another digit to number //

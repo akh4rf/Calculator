@@ -33,5 +33,8 @@ Separated out CLR scenario from rest of button actions to avoid repetition
 Version 0.5.3  
 Fixed bug caused by separating CLR scenario  
   
-Version 0.5.4 (in progress)  
-Fix bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
+Version 0.5.4  
+Fixed bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
+  
+Version 0.6 (In Progress)  
+Add sin(x), cos(x), tan(x), and Pi  
