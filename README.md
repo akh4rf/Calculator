@@ -1,9 +1,13 @@
 # Calculator
 
 My first GitHub repo
-
-Update Notes:
-
+  
+Project Info:  
+  
+Originally intended to be a simple four-function calculator, this program can now handle additional operations, including factorial, square, and square root. More operations are on the way.  
+  
+Update Notes:  
+  
 Version 0.1  
 Created GUI and added buttons for numbers and basic operators  
   
