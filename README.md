@@ -37,4 +37,13 @@ Version 0.5.4
 Fixed bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
   
 Version 0.6 (In Progress)  
-Add sin(x), cos(x), tan(x), and Pi  
+Add sin(x), cos(x), tan(x), PI, radian/degree switch button, +/- button, ln(x), and e  
+  
+Version 0.7 (Future)  
+Add 10^x, log10(x), and Parentheses  
+  
+Version 0.8 (Future)  
+Show numbers and operations stored in memory  
+  
+Version 0.9 (Future)  
+Implement copy/paste  
