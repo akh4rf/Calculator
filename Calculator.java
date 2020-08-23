@@ -67,7 +67,7 @@ public class Calculator extends JFrame {
             }
 
             // CASE 1: displayed text is not an operator //
-            if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
+            else if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
                 double num = Double.parseDouble(beforetext);
                 // If operator, add displayed number to ArrayList and display operator //
                 if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {

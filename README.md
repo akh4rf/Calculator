@@ -26,5 +26,8 @@ Version 0.5.2
 Fixed typo that triggered "LIMIT EXCEEDED" output at lower-than-intended input value  
 Separated out CLR scenario from rest of button actions to avoid repetition  
   
-Version 0.5.3 (in progress)  
+Version 0.5.3  
+Fixed bug caused by separating CLR scenario  
+  
+Version 0.5.4 (in progress)  
 Fix bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
