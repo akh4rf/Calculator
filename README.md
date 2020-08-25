@@ -38,6 +38,7 @@ Fixed bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num"
   
 Version 0.6.0  
 Added sin(x), cos(x), tan(x), π, radian/degree switch button, e^x, ln(x), and e  
+Added comments & fixed typos  
   
 Version 0.6.1 (In Progress)  
 Fix bug where typing π/e and then a number appends the number to the end of the approximation of π/e  

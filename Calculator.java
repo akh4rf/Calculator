@@ -35,7 +35,7 @@ public class Calculator extends JFrame {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
-        JPanel buttonGrid = new JPanel(); // Creates JPanel for the 20 buttons
+        JPanel buttonGrid = new JPanel(); // Creates JPanel for the 28 buttons
         buttonGrid.setLayout(new GridLayout(4, 7)); // Sets up 4x7 layout
 
         // Add buttons to grid //
