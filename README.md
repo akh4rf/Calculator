@@ -36,14 +36,20 @@ Fixed bug caused by separating CLR scenario
 Version 0.5.4  
 Fixed bug encountered when executing: "=" -> "(x^2)/(SQRT)/(x!)" -> "+" -> "num" -> "="  
   
-Version 0.6 (In Progress)  
-Add sin(x), cos(x), tan(x), PI, radian/degree switch button, +/- button, ln(x), and e  
+Version 0.6.0  
+Added sin(x), cos(x), tan(x), π, radian/degree switch button, e^x, ln(x), and e  
+  
+Version 0.6.1 (In Progress)  
+Fix bug where typing π/e and then a number appends the number to the end of the approximation of π/e  
   
 Version 0.7 (Future)  
-Add 10^x, log10(x), and Parentheses  
+Add arcsin(x), arccos(x), arctan(x), and +/- button  
   
 Version 0.8 (Future)  
-Show numbers and operations stored in memory  
+Add 10^x, log10(x), and Parentheses  
   
 Version 0.9 (Future)  
+Show numbers and operations stored in memory  
+  
+Version 1.0 (Future)  
 Implement copy/paste  

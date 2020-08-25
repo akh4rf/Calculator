@@ -15,26 +15,31 @@ public class Calculator extends JFrame {
     private JButton[] buttons;
     public JLabel field;
     public ArrayList<String> numAndOper;
+    public boolean radians;
     public static void main(String[] args) {
         new Calculator();
     }
 
     public Calculator() {
 
+        radians = true;
         numAndOper = new ArrayList<>();
         JFrame frame = new JFrame(); // Creates empty window
         // Create button grid //
-        String[] names = {"CLR","7","8","9","÷","x^2","4","5","6","x","SQRT","1","2","3","-","x!",".","0","=","+"};
-        buttons = new JButton[20];
-        for (int i = 0; i < 20; i++) {
+        String[] names = {"rad","π","CLR","7","8","9","÷",
+                            "sin(x)","e","x^2","4","5","6","x",
+                            "cos(x)","e^x","SQRT","1","2","3","-",
+                            "tan(x)","ln(x)","x!",".","0","=","+"};
+        buttons = new JButton[28];
+        for (int i = 0; i < 28; i++) {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
         JPanel buttonGrid = new JPanel(); // Creates JPanel for the 20 buttons
-        buttonGrid.setLayout(new GridLayout(4, 5)); // Sets up 4x5 layout
+        buttonGrid.setLayout(new GridLayout(4, 7)); // Sets up 4x7 layout
 
         // Add buttons to grid //
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 28; i++) {
             buttonGrid.add(buttons[i]);
         }
         // Create container for everything //
@@ -67,6 +72,16 @@ public class Calculator extends JFrame {
                 field.setText("0");
             }
 
+            // rad/deg switch //
+            else if (name.equals("rad")) {
+                buttons[0].setText("deg");
+                radians = false;
+            }
+            else if (name.equals("deg")) {
+                buttons[0].setText("rad");
+                radians = true;
+            }
+            
             // CASE 1: displayed text is not an operator //
             else if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
                 double num = Double.parseDouble(beforetext);
@@ -125,6 +140,102 @@ public class Calculator extends JFrame {
                         field.setText(fac);
                     }
                 }
+                // If sin(x), perform sin(x) on displayed number //
+                else if (name.equals("sin(x)")) {
+                    String sin;
+                    // Radian Case //
+                    if (radians) {
+                        sin = Double.toString(Math.sin(num));
+                    }
+                    // Degree Case //
+                    else {
+                        sin = Double.toString(Math.sin(Math.toRadians(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(sin);
+                    }
+                    field.setText(sin);
+                }
+                // If cos(x), perform cos(x) on displayed number //
+                else if (name.equals("cos(x)")) {
+                    String cos;
+                    // Radian Case //
+                    if (radians) {
+                        cos = Double.toString(Math.cos(num));
+                    }
+                    // Degree Case //
+                    else {
+                        cos = Double.toString(Math.cos(Math.toRadians(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(cos);
+                    }
+                    field.setText(cos);
+                }
+                // If tan(x), perform tan(x) on displayed number //
+                else if (name.equals("tan(x)")) {
+                    String tan;
+                    // Radian Case //
+                    if (radians) {
+                        tan = Double.toString(Math.tan(num));
+                    }
+                    // Degree Case //
+                    else {
+                        tan = Double.toString(Math.tan(Math.toRadians(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(tan);
+                    }
+                    field.setText(tan);
+                }
+                // If e^x, perform e^x on displayed number //
+                else if (name.equals("e^x")) {
+                    String eToX = Double.toString(Math.pow(Math.E, num));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(eToX);
+                    }
+                    field.setText(eToX);
+                }
+                // If ln(x), perform natural log on displayed number //
+                else if (name.equals("ln(x)")) {
+                    String lnx = Double.toString(Math.log(num));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(lnx);
+                    }
+                    field.setText(lnx);
+                }
+                // If π, multiply diplayed number by π //
+                else if (name.equals("π")) {
+                    if (num==0.0) {num=1.0;}
+                    String timespi = Double.toString(num*Math.PI);
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(timespi);
+                    }
+                    field.setText(timespi);
+                }
+                // If e, multiply diplayed number by e //
+                else if (name.equals("e")) {
+                    if (num==0.0) {num=1.0;}
+                    String timesE = Double.toString(num*Math.E);
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(timesE);
+                    }
+                    field.setText(timesE);
+                }
                 // Else, add another digit to number //
                 else {
                     String aftertext = beforetext;
@@ -152,10 +263,24 @@ public class Calculator extends JFrame {
                     numAndOper.removeAll(numAndOper);
                     numAndOper.add(Double.toString(result));
                 }
-                // If x-squared/SQRT/factorial, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
-                else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!")) {
+                // If function, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
+                else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!") ||
+                        name.equals("sin(x)") || name.equals("cos(x)") || name.equals("tan(x)") || 
+                        name.equals("e^x") || name.equals("ln(x)")) {
                     numAndOper.removeAll(numAndOper);
                     field.setText("ERROR");
+                }
+                // PI Case //
+                else if (name.equals("π")) {
+                    numAndOper.add(beforetext);
+                    String aftertext = Double.toString(Math.PI);
+                    field.setText(aftertext);
+                }
+                // e Case //
+                else if (name.equals("e")) {
+                    numAndOper.add(beforetext);
+                    String aftertext = Double.toString(Math.E);
+                    field.setText(aftertext);
                 }
                 // Else, add the operator to the ArrayList and display new number //
                 else {
