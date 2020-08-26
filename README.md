@@ -40,10 +40,12 @@ Version 0.6.0
 Added sin(x), cos(x), tan(x), π, radian/degree switch button, e^x, ln(x), and e  
 Added comments & fixed typos  
   
-Version 0.6.1 (In Progress)  
-Fix bug where typing π/e and then a number appends the number to the end of the approximation of π/e  
+Version 0.6.1  
+Changed functionality of π/e from original (multiplying) to final (replacing)  
+Fixed issue where clicking π/e and then a number appends the number to the end of the approximation of π/e  
+Fixed issue where clicking "=" and then a number appends the number to the end of the result  
   
-Version 0.7 (Future)  
+Version 0.7 (In Progress)  
 Add arcsin(x), arccos(x), arctan(x), and +/- button  
   
 Version 0.8 (Future)  

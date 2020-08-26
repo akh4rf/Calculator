@@ -214,39 +214,41 @@ public class Calculator extends JFrame {
                     }
                     field.setText(lnx);
                 }
-                // If π, multiply diplayed number by π //
+                // If π, replace diplayed number with π //
                 else if (name.equals("π")) {
-                    if (num==0.0) {num=1.0;}
-                    String timespi = Double.toString(num*Math.PI);
+                    String piString = Double.toString(Math.PI);
                     // Edge case when size = 1, must replace saved value with new value //
                     if (numAndOper.size()==1) {
                         numAndOper.remove(0);
-                        numAndOper.add(timespi);
+                        numAndOper.add(piString);
                     }
-                    field.setText(timespi);
+                    field.setText(piString);
                 }
-                // If e, multiply diplayed number by e //
+                // If e, replace diplayed number with e //
                 else if (name.equals("e")) {
-                    if (num==0.0) {num=1.0;}
-                    String timesE = Double.toString(num*Math.E);
+                    String eString = Double.toString(Math.E);
                     // Edge case when size = 1, must replace saved value with new value //
                     if (numAndOper.size()==1) {
                         numAndOper.remove(0);
-                        numAndOper.add(timesE);
+                        numAndOper.add(eString);
                     }
-                    field.setText(timesE);
+                    field.setText(eString);
                 }
                 // Else, add another digit to number //
                 else {
-                    String aftertext = beforetext;
-                    if (name.equals(".")) {
-                        // Disallow multiple decimal points //
-                        if (!beforetext.contains(".")) {
-                            aftertext += name;
+                    // Disallow appending to π/e approximations & calc function results //
+                    if (!(beforetext.equals(Double.toString(Math.PI)) || beforetext.equals(Double.toString(Math.E))) 
+                            && !(numAndOper.size()==1)) {
+                        String aftertext = beforetext;
+                        if (name.equals(".")) {
+                            // Disallow multiple decimal points //
+                            if (!beforetext.contains(".")) {
+                                aftertext += name;
+                            }
                         }
+                        else {aftertext += name;}
+                        field.setText(aftertext);
                     }
-                    else {aftertext += name;}
-                    field.setText(aftertext);
                 }
             }
 
