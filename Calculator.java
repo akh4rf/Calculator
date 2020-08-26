@@ -26,20 +26,20 @@ public class Calculator extends JFrame {
         numAndOper = new ArrayList<>();
         JFrame frame = new JFrame(); // Creates empty window
         // Create button grid //
-        String[] names = {"rad","π","CLR","7","8","9","÷",
-                            "sin(x)","e","x^2","4","5","6","x",
-                            "cos(x)","e^x","SQRT","1","2","3","-",
-                            "tan(x)","ln(x)","x!",".","0","=","+"};
-        buttons = new JButton[28];
-        for (int i = 0; i < 28; i++) {
+        String[] names = {"+/-","rad","π","CLR","7","8","9","÷",
+                            "arcsin(x)","sin(x)","e","x^2","4","5","6","x",
+                            "arccos(x)","cos(x)","e^x","SQRT","1","2","3","-",
+                            "arctan(x)","tan(x)","ln(x)","x!",".","0","=","+"};
+        buttons = new JButton[32];
+        for (int i = 0; i < 32; i++) {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
         JPanel buttonGrid = new JPanel(); // Creates JPanel for the 28 buttons
-        buttonGrid.setLayout(new GridLayout(4, 7)); // Sets up 4x7 layout
+        buttonGrid.setLayout(new GridLayout(4, 8)); // Sets up 4x8 layout
 
         // Add buttons to grid //
-        for (int i = 0; i < 28; i++) {
+        for (int i = 0; i < 32; i++) {
             buttonGrid.add(buttons[i]);
         }
         // Create container for everything //
@@ -74,11 +74,11 @@ public class Calculator extends JFrame {
 
             // rad/deg switch //
             else if (name.equals("rad")) {
-                buttons[0].setText("deg");
+                buttons[1].setText("deg");
                 radians = false;
             }
             else if (name.equals("deg")) {
-                buttons[0].setText("rad");
+                buttons[1].setText("rad");
                 radians = true;
             }
             
@@ -194,6 +194,60 @@ public class Calculator extends JFrame {
                     }
                     field.setText(tan);
                 }
+                // If arcsin(x), perform arcsin(x) on displayed number //
+                else if (name.equals("arcsin(x)")) {
+                    String asin;
+                    // Radian Case //
+                    if (radians) {
+                        asin = Double.toString(Math.asin(num));
+                    }
+                    // Degree Case //
+                    else {
+                        asin = Double.toString(Math.toDegrees(Math.asin(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(asin);
+                    }
+                    field.setText(asin);
+                }
+                // If arccos(x), perform arccos(x) on displayed number //
+                else if (name.equals("arccos(x)")) {
+                    String acos;
+                    // Radian Case //
+                    if (radians) {
+                        acos = Double.toString(Math.acos(num));
+                    }
+                    // Degree Case //
+                    else {
+                        acos = Double.toString(Math.toDegrees(Math.acos(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(acos);
+                    }
+                    field.setText(acos);
+                }
+                // If arctan(x), perform arctan(x) on displayed number //
+                else if (name.equals("arctan(x)")) {
+                    String atan;
+                    // Radian Case //
+                    if (radians) {
+                        atan = Double.toString(Math.atan(num));
+                    }
+                    // Degree Case //
+                    else {
+                        atan = Double.toString(Math.toDegrees(Math.atan(num)));
+                    }
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (numAndOper.size()==1) {
+                        numAndOper.remove(0);
+                        numAndOper.add(atan);
+                    }
+                    field.setText(atan);
+                }
                 // If e^x, perform e^x on displayed number //
                 else if (name.equals("e^x")) {
                     String eToX = Double.toString(Math.pow(Math.E, num));
@@ -234,6 +288,16 @@ public class Calculator extends JFrame {
                     }
                     field.setText(eString);
                 }
+                // +/- button //
+                else if (name.equals("+/-")) {
+                    String complement = Double.toString(num*=-1);
+                        // Edge case when size = 1, must replace saved value with new value //
+                        if (numAndOper.size()==1) {
+                            numAndOper.remove(0);
+                            numAndOper.add(complement);
+                        }
+                        field.setText(complement);
+                }
                 // Else, add another digit to number //
                 else {
                     // Disallow appending to π/e approximations & calc function results //
@@ -268,7 +332,8 @@ public class Calculator extends JFrame {
                 // If function, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
                 else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!") ||
                         name.equals("sin(x)") || name.equals("cos(x)") || name.equals("tan(x)") || 
-                        name.equals("e^x") || name.equals("ln(x)")) {
+                        name.equals("arcsin(x)") || name.equals("arccos(x)") || name.equals("arctan(x)") || 
+                        name.equals("e^x") || name.equals("ln(x)") || name.equals("+/-")) {
                     numAndOper.removeAll(numAndOper);
                     field.setText("ERROR");
                 }

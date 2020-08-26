@@ -45,10 +45,10 @@ Changed functionality of π/e from original (multiplying) to final (replacing)
 Fixed issue where clicking π/e and then a number appends the number to the end of the approximation of π/e  
 Fixed issue where clicking "=" and then a number appends the number to the end of the result  
   
-Version 0.7 (In Progress)  
-Add arcsin(x), arccos(x), arctan(x), and +/- button  
+Version 0.7  
+Added arcsin(x), arccos(x), arctan(x), and +/- button  
   
-Version 0.8 (Future)  
+Version 0.8 (In Progress)  
 Add 10^x, log10(x), and Parentheses  
   
 Version 0.9 (Future)  
