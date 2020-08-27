@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,34 +13,52 @@ import javax.swing.JPanel;
 
 public class Calculator extends JFrame {
 
-    private JButton[] buttons;
-    public JLabel field;
-    public ArrayList<String> numAndOper;
-    public boolean radians;
+    private JButton[] buttons;                      // Array that stores buttons for easy access
+    public JLabel field;                            // Displayed text area on top of calculator
+    public ArrayList<String> currentNumAndOp;       // Pointer for current ArrayList, stores numbers & operators
+    public Stack<ArrayList<String>> listStack;      // Stack for multi-level calculations and grouping with parentheses
+    public boolean radians;                         // Radians mode if true, degrees mode if false
     public static void main(String[] args) {
         new Calculator();
     }
 
+    //-------------------------------GUI PREVIEW-------------------------------//
+    //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\//
+    //-------------------------------------------------------------------------//
+    //-                                                                       -//
+    //-   0                                                                   -//
+    //-                                                                       -//
+    //-------------------------------------------------------------------------//
+    //-      (          )        rad    +/-   CLR    7     8     9     ÷      -//
+    //-     10^x     log10(x)    e^x   ln(x)  x^2    4     5     6     x      -//
+    //-    sin(x)     cos(x)    tan(x)   π    SQRT   1     2     3     -      -//
+    //-   arcsin(x)  arccos(x) arctan(x) e     x!    .     0     =     x      -//
+    //-------------------------------------------------------------------------//
+
     public Calculator() {
 
         radians = true;
-        numAndOper = new ArrayList<>();
+        currentNumAndOp = new ArrayList<>();
+        listStack = new Stack<ArrayList<String>>();
+        listStack.push(currentNumAndOp);
         JFrame frame = new JFrame(); // Creates empty window
+
+
         // Create button grid //
-        String[] names = {"+/-","rad","π","CLR","7","8","9","÷",
-                            "arcsin(x)","sin(x)","e","x^2","4","5","6","x",
-                            "arccos(x)","cos(x)","e^x","SQRT","1","2","3","-",
-                            "arctan(x)","tan(x)","ln(x)","x!",".","0","=","+"};
-        buttons = new JButton[32];
-        for (int i = 0; i < 32; i++) {
+        String[] names = {"(",")","rad","+/-","CLR","7","8","9","÷",
+                            "10^x","log10(x)","e^x","ln(x)","x^2","4","5","6","x",
+                            "sin(x)","cos(x)","tan(x)","π","SQRT","1","2","3","-",
+                            "arcsin(x)","arccos(x)","arctan(x)","e","x!",".","0","=","+"};
+        buttons = new JButton[36];
+        for (int i = 0; i < 36; i++) {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
-        JPanel buttonGrid = new JPanel(); // Creates JPanel for the 28 buttons
-        buttonGrid.setLayout(new GridLayout(4, 8)); // Sets up 4x8 layout
+        JPanel buttonGrid = new JPanel();                       // Creates JPanel for the 36 buttons
+        buttonGrid.setLayout(new GridLayout(4, 9));             // Sets up 4x9 layout
 
         // Add buttons to grid //
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 36; i++) {
             buttonGrid.add(buttons[i]);
         }
         // Create container for everything //
@@ -68,17 +87,20 @@ public class Calculator extends JFrame {
 
             // CLEAR CASE //
             if (name.equals("CLR")) {
-                numAndOper.removeAll(numAndOper);
+                // Clear function must clear both the current ArrayList & the overall Stack //
+                currentNumAndOp = new ArrayList<String>();
+                listStack.clear();
+                listStack.push(currentNumAndOp);
                 field.setText("0");
             }
 
             // rad/deg switch //
             else if (name.equals("rad")) {
-                buttons[1].setText("deg");
+                buttons[2].setText("deg");
                 radians = false;
             }
             else if (name.equals("deg")) {
-                buttons[1].setText("rad");
+                buttons[2].setText("rad");
                 radians = true;
             }
             
@@ -87,29 +109,29 @@ public class Calculator extends JFrame {
                 double num = Double.parseDouble(beforetext);
                 // If operator, add displayed number to ArrayList and display operator //
                 if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
-                    if (numAndOper.size()==0) {
-                        numAndOper.add(beforetext);
+                    if (currentNumAndOp.size()==0) {
+                        currentNumAndOp.add(beforetext);
                     }
-                    else if (!numAndOper.get(0).equals(beforetext)) {
-                        numAndOper.add(beforetext);
+                    else if (!currentNumAndOp.get(0).equals(beforetext)) {
+                        currentNumAndOp.add(beforetext);
                     }
                     field.setText(name);
                 }
                 // If equals, add the displayed number to ArrayList and calculate result //
                 else if (name.equals("=")) {
-                    numAndOper.add(beforetext);
-                    double result = calc(numAndOper);
+                    currentNumAndOp.add(beforetext);
+                    double result = calc(currentNumAndOp);
                     field.setText(Double.toString(result));
-                    numAndOper.removeAll(numAndOper);
-                    numAndOper.add(Double.toString(result));
+                    currentNumAndOp.removeAll(currentNumAndOp);
+                    currentNumAndOp.add(Double.toString(result));
                 }
                 // If x-squared, square displayed number //
                 else if (name.equals("x^2")) {
                     String squared = Double.toString(Math.pow(num, 2));
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(squared);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(squared);
                     }
                     field.setText(squared);
                 }
@@ -117,9 +139,9 @@ public class Calculator extends JFrame {
                 else if (name.equals("SQRT")) {
                     String sqrt = Double.toString(Math.pow(num, 0.5));
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(sqrt);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(sqrt);
                     }
                     field.setText(sqrt);
                 }
@@ -127,15 +149,15 @@ public class Calculator extends JFrame {
                 else if (name.equals("x!")) {
                     // Solves problem where 171! and above return "infinity" //
                     if (num > 170) {
-                        numAndOper.removeAll(numAndOper);
+                        currentNumAndOp.removeAll(currentNumAndOp);
                         field.setText("LIMIT EXCEEDED");
                     }
                     else {
                         String fac = Double.toString(factorial(num));
                         // Edge case when size = 1, must replace saved value with new value //
-                        if (numAndOper.size()==1) {
-                            numAndOper.remove(0);
-                            numAndOper.add(fac);
+                        if (currentNumAndOp.size()==1) {
+                            currentNumAndOp.remove(0);
+                            currentNumAndOp.add(fac);
                         }
                         field.setText(fac);
                     }
@@ -152,9 +174,9 @@ public class Calculator extends JFrame {
                         sin = Double.toString(Math.sin(Math.toRadians(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(sin);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(sin);
                     }
                     field.setText(sin);
                 }
@@ -170,9 +192,9 @@ public class Calculator extends JFrame {
                         cos = Double.toString(Math.cos(Math.toRadians(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(cos);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(cos);
                     }
                     field.setText(cos);
                 }
@@ -188,9 +210,9 @@ public class Calculator extends JFrame {
                         tan = Double.toString(Math.tan(Math.toRadians(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(tan);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(tan);
                     }
                     field.setText(tan);
                 }
@@ -206,9 +228,9 @@ public class Calculator extends JFrame {
                         asin = Double.toString(Math.toDegrees(Math.asin(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(asin);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(asin);
                     }
                     field.setText(asin);
                 }
@@ -224,9 +246,9 @@ public class Calculator extends JFrame {
                         acos = Double.toString(Math.toDegrees(Math.acos(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(acos);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(acos);
                     }
                     field.setText(acos);
                 }
@@ -242,9 +264,9 @@ public class Calculator extends JFrame {
                         atan = Double.toString(Math.toDegrees(Math.atan(num)));
                     }
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(atan);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(atan);
                     }
                     field.setText(atan);
                 }
@@ -252,9 +274,9 @@ public class Calculator extends JFrame {
                 else if (name.equals("e^x")) {
                     String eToX = Double.toString(Math.pow(Math.E, num));
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(eToX);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(eToX);
                     }
                     field.setText(eToX);
                 }
@@ -262,19 +284,39 @@ public class Calculator extends JFrame {
                 else if (name.equals("ln(x)")) {
                     String lnx = Double.toString(Math.log(num));
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(lnx);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(lnx);
                     }
                     field.setText(lnx);
+                }
+                // If 10^x, perform 10^x on displayed number //
+                else if (name.equals("10^x")) {
+                    String tenToX = Double.toString(Math.pow(10, num));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(tenToX);
+                    }
+                    field.setText(tenToX);
+                }
+                // If log10(x), perform log base 10 on displayed number //
+                else if (name.equals("log10(x)")) {
+                    String logTenX = Double.toString(Math.log10(num));
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(logTenX);
+                    }
+                    field.setText(logTenX);
                 }
                 // If π, replace diplayed number with π //
                 else if (name.equals("π")) {
                     String piString = Double.toString(Math.PI);
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(piString);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(piString);
                     }
                     field.setText(piString);
                 }
@@ -282,9 +324,9 @@ public class Calculator extends JFrame {
                 else if (name.equals("e")) {
                     String eString = Double.toString(Math.E);
                     // Edge case when size = 1, must replace saved value with new value //
-                    if (numAndOper.size()==1) {
-                        numAndOper.remove(0);
-                        numAndOper.add(eString);
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(eString);
                     }
                     field.setText(eString);
                 }
@@ -292,17 +334,39 @@ public class Calculator extends JFrame {
                 else if (name.equals("+/-")) {
                     String complement = Double.toString(num*=-1);
                         // Edge case when size = 1, must replace saved value with new value //
-                        if (numAndOper.size()==1) {
-                            numAndOper.remove(0);
-                            numAndOper.add(complement);
+                        if (currentNumAndOp.size()==1) {
+                            currentNumAndOp.remove(0);
+                            currentNumAndOp.add(complement);
                         }
                         field.setText(complement);
+                }
+                // Open Parenthesis //
+                else if (name.equals("(")) {
+                    // Since displayed text is a number, we will    //
+                    // multiply that by what's in the parenthese    //
+                    currentNumAndOp.add(beforetext);
+                    currentNumAndOp.add("x");
+                    // Add new ArrayList to stack & move pointer    //
+                    ArrayList<String> newNumAndOp = new ArrayList<String>();
+                    listStack.push(newNumAndOp);
+                    currentNumAndOp = newNumAndOp;
+                    field.setText("0");
+                }
+                // Close Parenthesis //
+                else if (name.equals(")")) {
+                    currentNumAndOp.add(beforetext);
+                    double result = calc(currentNumAndOp);
+                    field.setText(Double.toString(result));
+                    // Remove ArrayList from stack & move pointer   //
+                    currentNumAndOp.removeAll(currentNumAndOp);
+                    listStack.pop();
+                    currentNumAndOp = listStack.peek();
                 }
                 // Else, add another digit to number //
                 else {
                     // Disallow appending to π/e approximations & calc function results //
                     if (!(beforetext.equals(Double.toString(Math.PI)) || beforetext.equals(Double.toString(Math.E))) 
-                            && !(numAndOper.size()==1)) {
+                            && !(currentNumAndOp.size()==1)) {
                         String aftertext = beforetext;
                         if (name.equals(".")) {
                             // Disallow multiple decimal points //
@@ -324,34 +388,53 @@ public class Calculator extends JFrame {
                 }
                 // If equals, disregard displayed operator and calculate result //
                 else if (name.equals("=")) {
-                    double result = calc(numAndOper);
+                    double result = calc(currentNumAndOp);
                     field.setText(Double.toString(result));
-                    numAndOper.removeAll(numAndOper);
-                    numAndOper.add(Double.toString(result));
+                    currentNumAndOp.removeAll(currentNumAndOp);
+                    currentNumAndOp.add(Double.toString(result));
                 }
                 // If function, display "ERROR" (you can't enter an operator and then square/SQRT/factorial it) //
                 else if (name.equals("x^2") || name.equals("SQRT") || name.equals("x!") ||
                         name.equals("sin(x)") || name.equals("cos(x)") || name.equals("tan(x)") || 
                         name.equals("arcsin(x)") || name.equals("arccos(x)") || name.equals("arctan(x)") || 
-                        name.equals("e^x") || name.equals("ln(x)") || name.equals("+/-")) {
-                    numAndOper.removeAll(numAndOper);
+                        name.equals("e^x") || name.equals("ln(x)") || name.equals("+/-") ||
+                        name.equals("log10(x)") || name.equals("10^x")) {
+                    currentNumAndOp.removeAll(currentNumAndOp);
                     field.setText("ERROR");
                 }
                 // PI Case //
                 else if (name.equals("π")) {
-                    numAndOper.add(beforetext);
+                    currentNumAndOp.add(beforetext);
                     String aftertext = Double.toString(Math.PI);
                     field.setText(aftertext);
                 }
                 // e Case //
                 else if (name.equals("e")) {
-                    numAndOper.add(beforetext);
+                    currentNumAndOp.add(beforetext);
                     String aftertext = Double.toString(Math.E);
                     field.setText(aftertext);
                 }
+                // Open Parenthesis //
+                else if (name.equals("(")) {
+                    currentNumAndOp.add(beforetext);
+                    // Add new ArrayList to stack & move pointer    //
+                    ArrayList<String> newNumAndOp = new ArrayList<String>();
+                    listStack.push(newNumAndOp);
+                    currentNumAndOp = newNumAndOp;
+                    field.setText("0");
+                }
+                // Close Parenthesis //
+                else if (name.equals(")")) {
+                    double result = calc(currentNumAndOp);
+                    field.setText(Double.toString(result));
+                    // Remove ArrayList from stack & move pointer   //
+                    currentNumAndOp.removeAll(currentNumAndOp);
+                    listStack.pop();
+                    currentNumAndOp = listStack.peek();
+                }
                 // Else, add the operator to the ArrayList and display new number //
                 else {
-                    numAndOper.add(beforetext);
+                    currentNumAndOp.add(beforetext);
                     String aftertext = name;
                     field.setText(aftertext);
                 }

@@ -48,8 +48,13 @@ Fixed issue where clicking "=" and then a number appends the number to the end o
 Version 0.7  
 Added arcsin(x), arccos(x), arctan(x), and +/- button  
   
-Version 0.8 (In Progress)  
-Add 10^x, log10(x), and Parentheses  
+Version 0.8.0  
+Added 10^x and log10(x)  
+Added parentheses buttons & implemented grouping with them using a Stack of ArrayLists  
+Rearranged GUI buttons for a better user experience  
+  
+Version 0.8.1 (In Progress)  
+Finish implementing PEMDAS  
   
 Version 0.9 (Future)  
 Show numbers and operations stored in memory  
