@@ -55,7 +55,8 @@ Rearranged GUI buttons for a better user experience
 Compiled & created Calculator.jar  
   
 Version 0.8.1 (In Progress)  
-Finish implementing PEMDAS
+Finish implementing PEMDAS  
+Fix factorial function so it doesn't allow non-integer inputs  
   
 Version 0.9 (Future)  
 Show numbers and operations stored in memory  
