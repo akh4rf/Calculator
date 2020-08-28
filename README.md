@@ -52,7 +52,7 @@ Version 0.8.0
 Added 10^x and log10(x)  
 Added parentheses buttons & implemented grouping with them using a Stack of ArrayLists  
 Rearranged GUI buttons for a better user experience  
-Compiled & created Calculator.jar
+Compiled & created Calculator.jar  
   
 Version 0.8.1 (In Progress)  
 Finish implementing PEMDAS
