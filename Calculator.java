@@ -29,9 +29,9 @@ public class Calculator extends JFrame {
     //-   0                                                                   -//
     //-                                                                       -//
     //-------------------------------------------------------------------------//
-    //-      (          )        rad    +/-   CLR    7     8     9     ÷      -//
+    //-      (          )        rad    +/-   CLR    7     8     9     \u00F7      -//
     //-     10^x     log10(x)    e^x   ln(x)  x^2    4     5     6     x      -//
-    //-    sin(x)     cos(x)    tan(x)   π    SQRT   1     2     3     -      -//
+    //-    sin(x)     cos(x)    tan(x)   \u03C0    SQRT   1     2     3     -      -//
     //-   arcsin(x)  arccos(x) arctan(x) e     x!    .     0     =     x      -//
     //-------------------------------------------------------------------------//
 
@@ -45,9 +45,9 @@ public class Calculator extends JFrame {
 
 
         // Create button grid //
-        String[] names = {"(",")","rad","+/-","CLR","7","8","9","÷",
+        String[] names = {"(",")","rad","+/-","CLR","7","8","9","\u00F7",
                             "10^x","log10(x)","e^x","ln(x)","x^2","4","5","6","x",
-                            "sin(x)","cos(x)","tan(x)","π","SQRT","1","2","3","-",
+                            "sin(x)","cos(x)","tan(x)","\u03C0","SQRT","1","2","3","-",
                             "arcsin(x)","arccos(x)","arctan(x)","e","x!",".","0","=","+"};
         buttons = new JButton[36];
         for (int i = 0; i < 36; i++) {
@@ -105,10 +105,10 @@ public class Calculator extends JFrame {
             }
             
             // CASE 1: displayed text is not an operator //
-            else if (!(beforetext.equals("÷") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
+            else if (!(beforetext.equals("\u00F7") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
                 double num = Double.parseDouble(beforetext);
                 // If operator, add displayed number to ArrayList and display operator //
-                if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
+                if (name.equals("\u00F7") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     if (currentNumAndOp.size()==0) {
                         currentNumAndOp.add(beforetext);
                     }
@@ -310,8 +310,8 @@ public class Calculator extends JFrame {
                     }
                     field.setText(logTenX);
                 }
-                // If π, replace diplayed number with π //
-                else if (name.equals("π")) {
+                // If \u03C0, replace diplayed number with \u03C0 //
+                else if (name.equals("\u03C0")) {
                     String piString = Double.toString(Math.PI);
                     // Edge case when size = 1, must replace saved value with new value //
                     if (currentNumAndOp.size()==1) {
@@ -364,7 +364,7 @@ public class Calculator extends JFrame {
                 }
                 // Else, add another digit to number //
                 else {
-                    // Disallow appending to π/e approximations & calc function results //
+                    // Disallow appending to \u03C0/e approximations & calc function results //
                     if (!(beforetext.equals(Double.toString(Math.PI)) || beforetext.equals(Double.toString(Math.E))) 
                             && !(currentNumAndOp.size()==1)) {
                         String aftertext = beforetext;
@@ -383,7 +383,7 @@ public class Calculator extends JFrame {
             // CASE 2: displayed text is an operator //
             else {
                 // If new operator, replace old one //
-                if (name.equals("÷") || name.equals("x") || name.equals("-") || name.equals("+")) {
+                if (name.equals("\u00F7") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     field.setText(name);
                 }
                 // If equals, disregard displayed operator and calculate result //
@@ -403,7 +403,7 @@ public class Calculator extends JFrame {
                     field.setText("ERROR");
                 }
                 // PI Case //
-                else if (name.equals("π")) {
+                else if (name.equals("\u03C0")) {
                     currentNumAndOp.add(beforetext);
                     String aftertext = Double.toString(Math.PI);
                     field.setText(aftertext);
@@ -467,7 +467,7 @@ public class Calculator extends JFrame {
                     case "x":
                         result *= nxt;
                         break;
-                    case "÷":
+                    case "\u00F7":
                         result /= nxt;
                         break;
                 }
