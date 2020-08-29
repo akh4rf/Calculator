@@ -4,7 +4,7 @@ My first GitHub repo
   
 Project Info:  
   
-Originally intended to be a simple four-function calculator, this program can now handle additional operations, including factorial, square, and square root. More operations are on the way.  
+Originally intended to be a simple four-function calculator, this program can now handle additional operations, including factorial, square, square root, trig functions, exponentials, and more. This calculator also supports PEMDAS and grouping with parentheses. More additions are on the way.  
   
 Update Notes:  
   
