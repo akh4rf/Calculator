@@ -58,8 +58,9 @@ Version 0.8.1
 Finished implementing PEMDAS  
 Fixed factorial function so it doesn't allow non-integer inputs  
   
-Version 0.9 (In Progress)  
-Show numbers and operations stored in memory  
+Version 0.9  
+Calculator now shows numbers and operations stored in memory  
+Fixed edge cases for typing open parenthesis when displayed number is zero  
   
-Version 1.0 (Future)  
+Version 1.0 (In Progress)  
 Implement copy/paste  

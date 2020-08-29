@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 public class Calculator extends JFrame {
 
     private JButton[] buttons;                      // Array that stores buttons for easy access
+    public JLabel history;
     public JLabel field;                            // Displayed text area on top of calculator
     public ArrayList<String> currentNumAndOp;       // Pointer for current ArrayList, stores numbers & operators
     public Stack<ArrayList<String>> listStack;      // Stack for multi-level calculations and grouping with parentheses
@@ -28,7 +29,9 @@ public class Calculator extends JFrame {
     //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\//
     //-------------------------------------------------------------------------//
     //-                                                                       -//
-    //-   0                                                                   -//
+    //-   3+(2x3)                                                             -//
+    //-                                                                       -//
+    //-   6                                                                   -//
     //-                                                                       -//
     //-------------------------------------------------------------------------//
     //-      (          )        rad    +/-   CLR    7     8     9     ÷      -//
@@ -65,11 +68,14 @@ public class Calculator extends JFrame {
         }
         // Create container for everything //
         JPanel overall = new JPanel();
-        overall.setLayout(new GridLayout(2, 1));
+        overall.setLayout(new GridLayout(3, 1));
+        // History field //
+        history = new JLabel("");
         // Editable text field //
         field = new JLabel("0");
         // Add components //
-        overall.add(field, BorderLayout.NORTH);
+        overall.add(history, BorderLayout.NORTH);
+        overall.add(field, BorderLayout.CENTER);
         overall.add(buttonGrid, BorderLayout.SOUTH);
         // Add overall to frame //
         frame.add(overall, BorderLayout.CENTER);
@@ -86,6 +92,7 @@ public class Calculator extends JFrame {
             
             String beforetext = field.getText();
             String name = ((JButton) e.getSource()).getActionCommand();
+            String historyText = history.getText();
 
             // CLEAR CASE //
             if (name.equals("CLR")) {
@@ -94,6 +101,7 @@ public class Calculator extends JFrame {
                 listStack.clear();
                 listStack.push(currentNumAndOp);
                 field.setText("0");
+                history.setText("");
             }
 
             // rad/deg switch //
@@ -109,6 +117,12 @@ public class Calculator extends JFrame {
             // CASE 1: displayed text is not an operator //
             else if (!(beforetext.equals("\u00F7") || beforetext.equals("x") || beforetext.equals("-") || beforetext.equals("+"))) {
                 double num = Double.parseDouble(beforetext);
+                int divIndx = historyText.lastIndexOf("\u00F7");
+                int multIndx = historyText.lastIndexOf("x");
+                int subIndx = historyText.lastIndexOf("-");
+                int addIndx = historyText.lastIndexOf("+");
+                int indx = Math.max(Math.max(divIndx, multIndx), Math.max(subIndx, addIndx));
+                String before = historyText.substring(0, indx+1);
                 // If operator, add displayed number to ArrayList and display operator //
                 if (name.equals("\u00F7") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     if (currentNumAndOp.size()==0) {
@@ -118,12 +132,14 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(beforetext);
                     }
                     field.setText(name);
+                    history.setText(historyText+name);
                 }
                 // If equals, add the displayed number to ArrayList and calculate result //
                 else if (name.equals("=")) {
                     currentNumAndOp.add(beforetext);
                     double result = calc(currentNumAndOp);
                     field.setText(Double.toString(result));
+                    history.setText(Double.toString(result));
                     currentNumAndOp.removeAll(currentNumAndOp);
                     currentNumAndOp.add(Double.toString(result));
                 }
@@ -136,6 +152,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(squared);
                     }
                     field.setText(squared);
+                    history.setText(before+squared);
                 }
                 // If square-root, perform sqrt on displayed number //
                 else if (name.equals("SQRT")) {
@@ -146,6 +163,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(sqrt);
                     }
                     field.setText(sqrt);
+                    history.setText(before+sqrt);
                 }
                 // If !, perform factorial on displayed number //
                 else if (name.equals("x!")) {
@@ -163,6 +181,7 @@ public class Calculator extends JFrame {
                             currentNumAndOp.add(fac);
                         }
                         field.setText(fac);
+                        history.setText(historyText+"!");
                     }
                     // Scenario when input is not an integer //
                     else {
@@ -170,6 +189,7 @@ public class Calculator extends JFrame {
                         listStack.clear();
                         listStack.push(currentNumAndOp);
                         field.setText("ERROR: MUST BE INTEGER");
+                        history.setText("");
                     }
                 }
                 // If sin(x), perform sin(x) on displayed number //
@@ -189,6 +209,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(sin);
                     }
                     field.setText(sin);
+                    history.setText(before+sin);
                 }
                 // If cos(x), perform cos(x) on displayed number //
                 else if (name.equals("cos(x)")) {
@@ -207,6 +228,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(cos);
                     }
                     field.setText(cos);
+                    history.setText(before+cos);
                 }
                 // If tan(x), perform tan(x) on displayed number //
                 else if (name.equals("tan(x)")) {
@@ -225,6 +247,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(tan);
                     }
                     field.setText(tan);
+                    history.setText(before+tan);
                 }
                 // If arcsin(x), perform arcsin(x) on displayed number //
                 else if (name.equals("arcsin(x)")) {
@@ -243,6 +266,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(asin);
                     }
                     field.setText(asin);
+                    history.setText(before+asin);
                 }
                 // If arccos(x), perform arccos(x) on displayed number //
                 else if (name.equals("arccos(x)")) {
@@ -261,6 +285,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(acos);
                     }
                     field.setText(acos);
+                    history.setText(before+acos);
                 }
                 // If arctan(x), perform arctan(x) on displayed number //
                 else if (name.equals("arctan(x)")) {
@@ -279,6 +304,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(atan);
                     }
                     field.setText(atan);
+                    history.setText(before+atan);
                 }
                 // If e^x, perform e^x on displayed number //
                 else if (name.equals("e^x")) {
@@ -289,16 +315,28 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(eToX);
                     }
                     field.setText(eToX);
+                    history.setText(before+eToX);
                 }
                 // If ln(x), perform natural log on displayed number //
                 else if (name.equals("ln(x)")) {
-                    String lnx = Double.toString(Math.log(num));
-                    // Edge case when size = 1, must replace saved value with new value //
-                    if (currentNumAndOp.size()==1) {
-                        currentNumAndOp.remove(0);
-                        currentNumAndOp.add(lnx);
+                    // Edge case when num = 0 //
+                    if (num == 0) {
+                        currentNumAndOp = new ArrayList<String>();
+                        listStack.clear();
+                        listStack.push(currentNumAndOp);
+                        history.setText("");
+                        field.setText("ERROR");
                     }
-                    field.setText(lnx);
+                    else {
+                        String lnx = Double.toString(Math.log(num));
+                        // Edge case when size = 1, must replace saved value with new value //
+                        if (currentNumAndOp.size()==1) {
+                            currentNumAndOp.remove(0);
+                            currentNumAndOp.add(lnx);
+                        }
+                        field.setText(lnx);
+                        history.setText(before+lnx);
+                    }
                 }
                 // If 10^x, perform 10^x on displayed number //
                 else if (name.equals("10^x")) {
@@ -309,18 +347,31 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(tenToX);
                     }
                     field.setText(tenToX);
+                    history.setText(before+tenToX);
                 }
                 // If log10(x), perform log base 10 on displayed number //
                 else if (name.equals("log10(x)")) {
-                    String logTenX = Double.toString(Math.log10(num));
-                    // Edge case when size = 1, must replace saved value with new value //
-                    if (currentNumAndOp.size()==1) {
-                        currentNumAndOp.remove(0);
-                        currentNumAndOp.add(logTenX);
+                    
+                    // Edge case when num = 0 //
+                    if (num == 0) {
+                        currentNumAndOp = new ArrayList<String>();
+                        listStack.clear();
+                        listStack.push(currentNumAndOp);
+                        history.setText("");
+                        field.setText("ERROR");
                     }
-                    field.setText(logTenX);
+                    else {
+                        String logTenX = Double.toString(Math.log10(num));
+                        // Edge case when size = 1, must replace saved value with new value //
+                        if (currentNumAndOp.size()==1) {
+                            currentNumAndOp.remove(0);
+                            currentNumAndOp.add(logTenX);
+                        }
+                        field.setText(logTenX);
+                        history.setText(before+logTenX);
+                    }
                 }
-                // If \u03C0, replace diplayed number with \u03C0 //
+                // If π, replace diplayed number with π //
                 else if (name.equals("\u03C0")) {
                     String piString = Double.toString(Math.PI);
                     // Edge case when size = 1, must replace saved value with new value //
@@ -329,6 +380,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(piString);
                     }
                     field.setText(piString);
+                    history.setText(before+piString);
                 }
                 // If e, replace diplayed number with e //
                 else if (name.equals("e")) {
@@ -339,6 +391,7 @@ public class Calculator extends JFrame {
                         currentNumAndOp.add(eString);
                     }
                     field.setText(eString);
+                    history.setText(before+eString);
                 }
                 // +/- button //
                 else if (name.equals("+/-")) {
@@ -349,18 +402,33 @@ public class Calculator extends JFrame {
                             currentNumAndOp.add(complement);
                         }
                         field.setText(complement);
+                        history.setText(before+complement);
                 }
                 // Open Parenthesis //
                 else if (name.equals("(")) {
                     // Since displayed text is a number, we will    //
-                    // multiply that by what's in the parenthese    //
-                    currentNumAndOp.add(beforetext);
-                    currentNumAndOp.add("x");
+                    // multiply that by what's in the parentheses   //
+                    if (currentNumAndOp.size()>0) {
+                        // Edge case when 0 is only number in memory //
+                        if (Double.parseDouble(beforetext)==0.0 && currentNumAndOp.size()==1) {
+                            history.setText("");
+                            currentNumAndOp.remove(0);
+                            currentNumAndOp.add("1");
+                        }
+                        currentNumAndOp.add("x");
+                    }
+                    // Edge case when first started, i.e. nothing in memory //
+                    else {
+                        currentNumAndOp.add("0");
+                        currentNumAndOp.add("+");
+                    }
                     // Add new ArrayList to stack & move pointer    //
                     ArrayList<String> newNumAndOp = new ArrayList<String>();
                     listStack.push(newNumAndOp);
                     currentNumAndOp = newNumAndOp;
                     field.setText("0");
+                    historyText = history.getText();
+                    history.setText(historyText+name);
                 }
                 // Close Parenthesis //
                 else if (name.equals(")")) {
@@ -371,10 +439,11 @@ public class Calculator extends JFrame {
                     currentNumAndOp.removeAll(currentNumAndOp);
                     listStack.pop();
                     currentNumAndOp = listStack.peek();
+                    history.setText(historyText+name);
                 }
                 // Else, add another digit to number //
                 else {
-                    // Disallow appending to \u03C0/e approximations & calc function results //
+                    // Disallow appending to π/e approximations & calc function results //
                     if (!(beforetext.equals(Double.toString(Math.PI)) || beforetext.equals(Double.toString(Math.E))) 
                             && !(currentNumAndOp.size()==1)) {
                         String aftertext = beforetext;
@@ -386,6 +455,7 @@ public class Calculator extends JFrame {
                         }
                         else {aftertext += name;}
                         field.setText(aftertext);
+                        history.setText(historyText+name);
                     }
                 }
             }
@@ -395,11 +465,13 @@ public class Calculator extends JFrame {
                 // If new operator, replace old one //
                 if (name.equals("\u00F7") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     field.setText(name);
+                    history.setText(historyText.substring(0,historyText.length()-1)+name);
                 }
                 // If equals, disregard displayed operator and calculate result //
                 else if (name.equals("=")) {
                     double result = calc(currentNumAndOp);
                     field.setText(Double.toString(result));
+                    history.setText(Double.toString(result));
                     currentNumAndOp.removeAll(currentNumAndOp);
                     currentNumAndOp.add(Double.toString(result));
                 }
@@ -413,19 +485,22 @@ public class Calculator extends JFrame {
                     currentNumAndOp = new ArrayList<String>();
                     listStack.clear();
                     listStack.push(currentNumAndOp);
+                    history.setText("");
                     field.setText("ERROR");
                 }
-                // PI Case //
+                // π Case //
                 else if (name.equals("\u03C0")) {
                     currentNumAndOp.add(beforetext);
                     String aftertext = Double.toString(Math.PI);
                     field.setText(aftertext);
+                    history.setText(historyText+aftertext);
                 }
                 // e Case //
                 else if (name.equals("e")) {
                     currentNumAndOp.add(beforetext);
                     String aftertext = Double.toString(Math.E);
                     field.setText(aftertext);
+                    history.setText(historyText+aftertext);
                 }
                 // Open Parenthesis //
                 else if (name.equals("(")) {
@@ -435,6 +510,7 @@ public class Calculator extends JFrame {
                     listStack.push(newNumAndOp);
                     currentNumAndOp = newNumAndOp;
                     field.setText("0");
+                    history.setText(historyText+name);
                 }
                 // Close Parenthesis //
                 else if (name.equals(")")) {
@@ -444,12 +520,13 @@ public class Calculator extends JFrame {
                     currentNumAndOp.removeAll(currentNumAndOp);
                     listStack.pop();
                     currentNumAndOp = listStack.peek();
+                    history.setText(historyText+name);
                 }
                 // Else, add the operator to the ArrayList and display new number //
                 else {
                     currentNumAndOp.add(beforetext);
-                    String aftertext = name;
-                    field.setText(aftertext);
+                    field.setText(name);
+                    history.setText(historyText+name);
                 }
             }
         }
