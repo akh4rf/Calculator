@@ -154,7 +154,8 @@ public class Calculator extends JFrame {
                         currentNumAndOp.removeAll(currentNumAndOp);
                         field.setText("LIMIT EXCEEDED");
                     }
-                    else {
+                    // Disallows non-integer inputs //
+                    else if ((num == Math.floor(num)) && !Double.isInfinite(num)) {
                         String fac = Double.toString(factorial(num));
                         // Edge case when size = 1, must replace saved value with new value //
                         if (currentNumAndOp.size()==1) {
@@ -162,6 +163,13 @@ public class Calculator extends JFrame {
                             currentNumAndOp.add(fac);
                         }
                         field.setText(fac);
+                    }
+                    // Scenario when input is not an integer //
+                    else {
+                        currentNumAndOp = new ArrayList<String>();
+                        listStack.clear();
+                        listStack.push(currentNumAndOp);
+                        field.setText("ERROR: MUST BE INTEGER");
                     }
                 }
                 // If sin(x), perform sin(x) on displayed number //
@@ -401,7 +409,10 @@ public class Calculator extends JFrame {
                         name.equals("arcsin(x)") || name.equals("arccos(x)") || name.equals("arctan(x)") || 
                         name.equals("e^x") || name.equals("ln(x)") || name.equals("+/-") ||
                         name.equals("log10(x)") || name.equals("10^x")) {
-                    currentNumAndOp.removeAll(currentNumAndOp);
+
+                    currentNumAndOp = new ArrayList<String>();
+                    listStack.clear();
+                    listStack.push(currentNumAndOp);
                     field.setText("ERROR");
                 }
                 // PI Case //
@@ -449,13 +460,38 @@ public class Calculator extends JFrame {
      * @return
      */
     public double calc(ArrayList<String> al) {
+        int size = al.size();
         // Edge cases //
         if (al.size() == 0) {return 0.0;}
         if (al.size() == 1) {return Double.parseDouble(al.get(0));}
         else {
+            // Handle multiplication and division first, moving left-to-right //
+            for (int i = 1; i <= size - 2; i+=2) {
+                switch (al.get(i)) {
+                    case "x":
+                        double mult = Double.parseDouble(al.get(i-1))*Double.parseDouble(al.get(i+1));
+                        al.set(i-1, Double.toString(mult));
+                        al.remove(i);
+                        al.remove(i);
+                        // Set to -1, as loop will add 2 //
+                        i=-1;
+                        size = al.size();
+                        break;
+                    case "\u00F7":
+                        double div = Double.parseDouble(al.get(i-1))/Double.parseDouble(al.get(i+1));
+                        al.set(i-1, Double.toString(div));
+                        al.remove(i);
+                        al.remove(i);
+                        // Set to -1, as loop will add 2 //
+                        i=-1;
+                        size = al.size();
+                        break;
+                }
+            }
+            // Now handle addition and subtraction, again left-to-right //
             double result = Double.parseDouble(al.get(0));
             // Iterates over oper-double pairs //
-            for (int j = 1; j <= al.size() - 2; j+=2) {
+            for (int j = 1; j <= size - 2; j+=2) {
                 String oper = al.get(j);
                 double nxt = Double.parseDouble(al.get(j+1));
                 // Checks which operation to use //
@@ -465,12 +501,6 @@ public class Calculator extends JFrame {
                         break;
                     case "-":
                         result -= nxt;
-                        break;
-                    case "x":
-                        result *= nxt;
-                        break;
-                    case "\u00F7":
-                        result /= nxt;
                         break;
                 }
             }
