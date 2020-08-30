@@ -16,11 +16,12 @@ import javax.swing.JPanel;
 public class Calculator extends JFrame {
 
     private JButton[] buttons;                      // Array that stores buttons for easy access
-    public JLabel history;
+    public JLabel history;                          // History of what has been entered
     public JLabel field;                            // Displayed text area on top of calculator
     public ArrayList<String> currentNumAndOp;       // Pointer for current ArrayList, stores numbers & operators
     public Stack<ArrayList<String>> listStack;      // Stack for multi-level calculations and grouping with parentheses
     public boolean radians;                         // Radians mode if true, degrees mode if false
+    public String copied;                           // Copied number
     public static void main(String[] args) {
         new Calculator();
     }
@@ -53,9 +54,10 @@ public class Calculator extends JFrame {
         String[] names = {"(",")","rad","+/-","CLR","7","8","9","\u00F7",
                             "10^x","log10(x)","e^x","ln(x)","x^2","4","5","6","x",
                             "sin(x)","cos(x)","tan(x)","\u03C0","SQRT","1","2","3","-",
-                            "arcsin(x)","arccos(x)","arctan(x)","e","x!",".","0","=","+"};
-        buttons = new JButton[36];
-        for (int i = 0; i < 36; i++) {
+                            "arcsin(x)","arccos(x)","arctan(x)","e","x!",".","0","=","+",
+                            "COPY","PASTE"};
+        buttons = new JButton[38];                              // 36 buttons + copy + paste
+        for (int i = 0; i < 38; i++) {
             buttons[i] = new JButton(names[i]);
             buttons[i].addActionListener(new buttonListener()); // Adds ActionListener so buttons trigger an event
         }
@@ -68,15 +70,20 @@ public class Calculator extends JFrame {
         }
         // Create container for everything //
         JPanel overall = new JPanel();
-        overall.setLayout(new GridLayout(3, 1));
+        overall.setLayout(new GridLayout(4, 1));
         // History field //
         history = new JLabel("");
+        // Copy/Paste //
+        JPanel copyPaste = new JPanel();
+        copyPaste.setLayout(new GridLayout(1, 2));
+        copyPaste.add(buttons[36]); copyPaste.add(buttons[37]);
         // Editable text field //
         field = new JLabel("0");
         // Add components //
         overall.add(history, BorderLayout.NORTH);
         overall.add(field, BorderLayout.CENTER);
         overall.add(buttonGrid, BorderLayout.SOUTH);
+        overall.add(copyPaste, BorderLayout.SOUTH);
         // Add overall to frame //
         frame.add(overall, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,12 +134,29 @@ public class Calculator extends JFrame {
                 if (name.equals("\u00F7") || name.equals("x") || name.equals("-") || name.equals("+")) {
                     if (currentNumAndOp.size()==0) {
                         currentNumAndOp.add(beforetext);
+                        field.setText(name);
+                        history.setText(historyText+name);
                     }
-                    else if (!currentNumAndOp.get(0).equals(beforetext)) {
+                    else {
                         currentNumAndOp.add(beforetext);
+                        if (currentNumAndOp.get(0).equals(currentNumAndOp.get(1))) {currentNumAndOp.remove(0);}
+                        field.setText(name);
+                        history.setText(historyText+name);
                     }
-                    field.setText(name);
-                    history.setText(historyText+name);
+                }
+                // Copy Case //
+                else if (name.equals("COPY")) {
+                    copied = beforetext;
+                }
+                // Paste Case //
+                else if (name.equals("PASTE")) {
+                    // Edge case when size = 1, must replace saved value with new value //
+                    if (currentNumAndOp.size()==1) {
+                        currentNumAndOp.remove(0);
+                        currentNumAndOp.add(copied);
+                    }
+                    field.setText(copied);
+                    history.setText(before+copied);
                 }
                 // If equals, add the displayed number to ArrayList and calculate result //
                 else if (name.equals("=")) {
@@ -402,7 +426,15 @@ public class Calculator extends JFrame {
                             currentNumAndOp.add(complement);
                         }
                         field.setText(complement);
-                        history.setText(before+complement);
+                        if (num > 0) {
+                            history.setText(before.substring(0,before.length()-1)+complement);
+                        }
+                        else if (num < 0) {
+                            if (historyText.lastIndexOf("(") > indx) {
+                                before = historyText.substring(0, historyText.lastIndexOf("(")+1);
+                            }
+                            history.setText(before+complement);
+                        }
                 }
                 // Open Parenthesis //
                 else if (name.equals("(")) {
@@ -521,6 +553,20 @@ public class Calculator extends JFrame {
                     listStack.pop();
                     currentNumAndOp = listStack.peek();
                     history.setText(historyText+name);
+                }
+                // Copy Case //
+                else if (name.equals("COPY")) {
+                    currentNumAndOp = new ArrayList<String>();
+                    listStack.clear();
+                    listStack.push(currentNumAndOp);
+                    history.setText("");
+                    field.setText("ERROR: MUST COPY NUMBER, NOT OPERATOR");
+                }
+                // Paste Case //
+                else if (name.equals("PASTE")) {
+                    currentNumAndOp.add(beforetext);
+                    field.setText(copied);
+                    history.setText(historyText+copied);
                 }
                 // Else, add the operator to the ArrayList and display new number //
                 else {
