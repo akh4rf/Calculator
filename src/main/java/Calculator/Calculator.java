@@ -40,6 +40,8 @@ public class Calculator extends JFrame {
     //-    sin(x)     cos(x)    tan(x)   π    SQRT   1     2     3     -      -//
     //-   arcsin(x)  arccos(x) arctan(x) e     x!    .     0     =     x      -//
     //-------------------------------------------------------------------------//
+    //-                COPY               |               PASTE               -//
+    //-------------------------------------------------------------------------//
 
     public Calculator() {
 
